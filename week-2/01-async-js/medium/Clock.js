@@ -14,13 +14,13 @@ const seconds24 = date.getSeconds();
 
 setInterval(()=>{
 const date = new Date();
-const hours = date.getHours();
+const hours = date.getHours()>=12 ? date.getHours()-12 : date.getHours(); 
 const minutes = date.getMinutes();
 const seconds = date.getSeconds();
-const timeString = hours>=12 ? "PM" : "AM"
+const timeString = date.getHours()>=12 ? "PM" : "AM"
 
 
-    console.log(`\n${Math.abs(hours-12)}:${minutes}:${seconds} ${timeString}`);
+    console.log(`\n${hours}:${minutes}:${seconds} ${timeString}`);
 },1000)
 
 
