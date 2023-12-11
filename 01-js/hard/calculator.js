@@ -16,6 +16,90 @@
   Once you've implemented the logic, test your code by running
 */
 
-class Calculator {}
+class Calculator {
+  
+  constructor(){
+     this.result = 0;
+  }
 
+
+  add(number){
+    return (this.result+= +number);
+  }
+  subtract(number){
+    return (this.result-= +number);
+  }
+
+  multiply(number){
+    return (this.result*= +number);
+  }
+
+  divide(number){
+    if(number === 0){
+      throw new Error("Cannot divide by 0");
+    }
+    return (this.result/= +number);
+  }
+  clear(){
+    return this.result=0;
+  }
+  
+
+  calculate(string){
+    const regex = /[^0-9\s\+\*\/\-\(\)\.]/g;
+    const hasInvalidCharacters= regex.test(string);
+
+    if(hasInvalidCharacters  || typeof eval(string)!=="number" || eval(string)===Infinity){
+      throw new Error("Invalid Expression");
+    }else{
+      const result = eval(string);
+        return (this.result+=result);
+    }
+  }
+  getResult(){
+    return this.result;
+  }
+}
+
+
+/* class Calculator {
+  constructor() {
+    this.result = 0;
+  }
+
+  add(number) {
+    return (this.result += number);
+  }
+
+  subtract(number) {
+    return (this.result -= number);
+  }
+
+  multiply(number) {
+    return (this.result *= number);
+  }
+
+  divide(number) {
+    if (number === 0) {
+      throw new Error(`Can't be divided by Zero !`);
+    } else return (this.result /= number);
+  }
+
+  clear() {
+    return (this.result = 0);
+  }
+
+  getResult() {
+    return this.result;
+  }
+
+  calculate(equation) {
+    if (typeof eval(equation) !== "number" || eval(equation) === Infinity) {
+      throw new Error("Invalid Expression !");
+    } else {
+      const answer = eval(equation);
+      return (this.result += answer);
+    }
+  }
+} */
 module.exports = Calculator;

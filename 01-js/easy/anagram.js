@@ -5,6 +5,17 @@
 */
 
 function isAnagram(str1, str2) {
+  if(str1.length !== str2.length)return false;
+  const charMap = new Map();
+  
+  for(const char of str1.toLowerCase()){
+    charMap.set(char, (charMap.get(char)||0)+1)
+  }
+
+  for(char of str2.toLowerCase()){
+    if(!charMap.has(char))return false;
+  }
+  return true;
 
 }
 
