@@ -6,18 +6,28 @@
  */
 
 function wait1(t) {
-
+    return new Promise((resolve,reject)=>{
+        setTimeout(()=>resolve(t*1000),t*1000); // resolve the time given to them
+    });
 }
 
 function wait2(t) {
-
+    
+    return new Promise((resolve,reject)=>{
+        setTimeout(()=>resolve(t*1000),t*1000); // resolve the time given to them
+    });
 }
 
 function wait3(t) {
-
+    
+    return new Promise((resolve,reject)=>{
+        setTimeout(()=>resolve(t*1000),t*1000); // resolve the time given to them 
+    });
 }
-
 function calculateTime(t1, t2, t3) {
+    return wait1(t1)
+    .then((time1)=>wait2(t2).then((time2)=>time1+time2))
+    .then((time12)=>wait3(t3).then((time3)=>time12+time3));
 
 }
 
