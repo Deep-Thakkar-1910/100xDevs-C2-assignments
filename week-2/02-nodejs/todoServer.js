@@ -1,3 +1,4 @@
+"use strict";
 /**
   You need to create an express HTTP server in Node.js which will handle the logic of a todo list app.
   - Don't use any database, just store all the data in an array to store the todo list data (in-memory)
@@ -39,11 +40,116 @@
 
   Testing the server - run `npm run test-todoServer` command in terminal
  */
+
+  // Going for hard challenge and skipping eazy one 
   const express = require('express');
-  const bodyParser = require('body-parser');
-  
+  const path = require('path');
+  const fs = require('fs');
+
   const app = express();
   
-  app.use(bodyParser.json());
+  const todoDirectory = path.join(__dirname,'./Todos');
   
+
+  app.use(express.json()); 
+  app.use(express.urlencoded({extended: true}));
+  app.get("/todos",(req,res)=>{
+    
+    fs.readdir(todoDirectory,(err,files)=>{
+      
+      if(err){
+        return res.status(500).json({error:"Server error"})
+      }
+      res.status(200).json(files);
+
+    });
+  });//get request to return files present in todoDirectory.
+
+  app.get("/todos/:id",(req,res)=>{
+    fs.readFile(path.join(__dirname,'./Todos/',`${req.params.id}.txt`),"utf-8",(err,data)=>{
+      if(err){
+        return res.status(404).send("File Not Found");
+      }else{
+        return res.status(200).json({data:data});
+      }
+    });
+  });
+
+  app.post("/todos",(req,res)=>{
+    const file  = {
+      id:Math.trunc(Math.random()*10000),
+      title:req.body.title,
+      description:req.body.description,
+      completed : req.body.completed
+    }
+    
+    const filenamePath = path.join(__dirname,'./Todos/',`${file.id}.txt`);
+    const data = `Title : ${file.title??empty}\nCompleted:${file.completed || false}\nDescription : ${file.description??"empty"}`;
+    const fileName = filenamePath.split("/").pop();
+      fs.appendFile(filenamePath,data,err=>{
+        if(!err){
+        return res.status(201).json({
+          message:`Created with the ID ${file.id}`
+        })
+      }
+    });
+  }); // Post request to make a new file with an id,title and body
+  
+  app.put("/todos/:id",(req,res)=>{
+
+    fs.readdir(todoDirectory,(err,files)=>{
+      
+      if(err){
+        return res.status(500).json({error:"Server error"})
+      }else{
+              const data = `Title : ${req.body.title}\nCompleted:${req.body.completed}\nDescription : ${req.body.description}`;
+            if(files.includes(`${req.params.id}.txt`)){
+            fs.writeFile(path.join(__dirname,'./Todos/',`${req.params.id}.txt`),data,err=>{
+              if(err){
+                return res.status(404)
+              }else{
+                res.status(200).send();
+              }
+            });
+            }else{
+              return res.status(404).send("File not found");
+            }
+      }
+
+
+    });
+    
+  }); // Put request to check and update files
+
+ app.delete("/todos/:id", (req,res)=>{
+  
+  fs.readdir(todoDirectory,(err,files)=>{
+      
+    if(err){
+      return res.status(500).json({error:"Server error"})
+    }else{
+      if(files.includes(`${req.params.id}.txt`)){
+      const pathToFile = path.join(__dirname,'./Todos/',`${req.params.id}.txt`);
+      fs.unlink(pathToFile,err=>{
+        if(err){
+          res.status(404).send();
+        }else{
+          res.status(200).send("File deleted succesfully");
+        }
+      });
+    }else{
+      res.status(404).send("File not found");
+      
+    }
+    }
+    
+
+  });
+
+  
+ }); // Delete request to delete the file of requested id if it exists
+
+app.listen(3000,()=>{
+  console.log("listening on port 3000");
+});
   module.exports = app;
