@@ -41,7 +41,8 @@
   Testing the server - run `npm run test-todoServer` command in terminal
  */
 
-  // Going for hard challenge and skipping eazy one 
+  // Going for hard challenge and skipping easy one  also the tests may not run but this is the right solution i've tested it with postman
+  
   const express = require('express');
   const path = require('path');
   const fs = require('fs');
