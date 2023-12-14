@@ -42,7 +42,7 @@
  */
 
   // Going for hard challenge and skipping easy one  also the tests may not run but this is the right solution i've tested it with postman
-  
+
   const express = require('express');
   const path = require('path');
   const fs = require('fs');
@@ -149,6 +149,10 @@
 
   
  }); // Delete request to delete the file of requested id if it exists
+
+ app.all('*', (req, res)=>{
+  res.status(404).send("Route not found");
+ });
 
 app.listen(3000,()=>{
   console.log("listening on port 3000");
