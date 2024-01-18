@@ -1,4 +1,4 @@
-const express = require("express");
+/* const express = require("express");
 const jwt = require("jsonwebtoken");
 const jwtPassword = "123456";
 
@@ -57,4 +57,68 @@ app.get("/users", function (req, res) {
   }
 });
 
-app.listen(3000)
+app.listen(3000) */
+
+const express = require('express');
+const jwt = require('jsonwebtoken');
+const app = express();
+
+const jwtPassword = "12345";
+app.use(express.json());
+
+const userNameExists = (username)=>{
+  const user = ALL_USERS.find(user=> username === user);
+  return user??false;
+}
+
+const ALL_USERS = [
+  {
+    username: "harkirat@gmail.com",
+    password: "123",
+    name: "harkirat singh",
+  },
+  {
+    username: "raman@gmail.com",
+    password: "123321",
+    name: "Raman singh",
+  },
+  {
+    username: "priya@gmail.com",
+    password: "123321",
+    name: "Priya kumari",
+  },
+];
+
+
+app.post("/signin",(req,res)=>{
+  const username = req.body.username;
+  // const password = req.body.password;
+  
+  if(!userNameExists){
+    res.status(403).json({error: "User does not exists"});
+  }
+  const token =  jwt.sign({username:username},"algo");
+  return res.json({token:token});
+});
+
+
+app.get("/users",(req,res)=>{
+  const auth = req.headers.authorization;
+try{
+  const decoded = jwt.verify(auth,"algo");
+  console.log(decoded)
+  const username = decoded.username;
+  console.log(username)
+  return res.json({users:
+    ALL_USERS.filter(person=>person.username!==username)
+  }) ;
+
+}catch(err){
+  return res.status(400).json({message:"something is wrong with your inputs"});
+}
+
+});
+
+app.listen(3000,()=>{
+  console.log("The server is running on port 3000 ")
+})
